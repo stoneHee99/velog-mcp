@@ -1,24 +1,37 @@
 {
   "name": "velog-mcp",
   "version": "0.1.0",
-  "description": "MCP server for Velog blogging platform",
+  "description": "MCP server for Velog blogging platform - Read, write, and manage Velog posts via Model Context Protocol",
   "type": "module",
   "bin": {
-    "velog-mcp": "./dist/index.js"
+    "velog-mcp": "dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "start": "node dist/index.js",
-    "login": "node dist/auth.js"
+    "login": "node dist/auth.js",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "velog",
-    "blog"
+    "blog",
+    "claude",
+    "ai",
+    "korean"
   ],
-  "author": "",
+  "author": "stoneHee99",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stoneHee99/velog-mcp.git"
+  },
+  "homepage": "https://github.com/stoneHee99/velog-mcp",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "zod": "^4.3.6"
