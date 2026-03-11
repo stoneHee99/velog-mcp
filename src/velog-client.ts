@@ -20,7 +20,12 @@ export class VelogClient {
     };
 
     if (this.accessToken) {
-      headers["Cookie"] = `access_token=${this.accessToken}${this.refreshToken ? `; refresh_token=${this.refreshToken}` : ""}`;
+      const cookieValue = `access_token=${this.accessToken}${this.refreshToken ? `; refresh_token=${this.refreshToken}` : ""}`;
+      // Validate cookie is ByteString-safe (all chars <= 255) for Node.js fetch
+      const isByteStringSafe = [...cookieValue].every((ch) => ch.charCodeAt(0) <= 255);
+      if (isByteStringSafe) {
+        headers["Cookie"] = cookieValue;
+      }
     }
 
     // Extract operationName from query

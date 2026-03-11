@@ -103,27 +103,36 @@ function decryptCookieValue(encryptedValue: Buffer, key: Buffer, isAesGcm: boole
 
   const prefix = encryptedValue.subarray(0, 3).toString("utf-8");
 
+  let decrypted: string;
+
   if (prefix === "v10" && !isAesGcm) {
     // macOS / Linux: AES-128-CBC
     const encrypted = encryptedValue.subarray(3);
     const iv = Buffer.alloc(16, " "); // 16 bytes of 0x20
     const decipher = crypto.createDecipheriv("aes-128-cbc", key, iv);
     decipher.setAutoPadding(true);
-    return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf-8");
-  }
-
-  if ((prefix === "v10" || prefix === "v11") && isAesGcm) {
+    decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf-8");
+  } else if ((prefix === "v10" || prefix === "v11") && isAesGcm) {
     // Windows: AES-256-GCM
     const nonce = encryptedValue.subarray(3, 3 + 12); // 12-byte nonce
     const ciphertext = encryptedValue.subarray(3 + 12, encryptedValue.length - 16); // everything except last 16 bytes
     const authTag = encryptedValue.subarray(encryptedValue.length - 16); // last 16 bytes = auth tag
     const decipher = crypto.createDecipheriv("aes-256-gcm", key, nonce);
     decipher.setAuthTag(authTag);
-    return Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString("utf-8");
+    decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString("utf-8");
+  } else {
+    // Unencrypted
+    decrypted = encryptedValue.toString("utf-8");
   }
 
-  // Unencrypted
-  return encryptedValue.toString("utf-8");
+  // Chrome CBC decryption with mismatched IV can produce garbage bytes
+  // before the actual value. For JWT tokens, extract from "eyJ" prefix.
+  const jwtStart = decrypted.indexOf("eyJ");
+  if (jwtStart > 0) {
+    decrypted = decrypted.substring(jwtStart);
+  }
+
+  return decrypted;
 }
 
 // ── Chrome profile discovery ──
