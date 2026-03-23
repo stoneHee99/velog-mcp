@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/velog-mcp)](https://www.npmjs.com/package/velog-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCPAmpel](https://img.shields.io/endpoint?url=https://mcpampel.com/badge/stoneHee99/velog-mcp.json)](https://mcpampel.com/repo/stoneHee99/velog-mcp)
 
 [Velog](https://velog.io) 블로그 플랫폼용 MCP(Model Context Protocol) 서버입니다.
 
