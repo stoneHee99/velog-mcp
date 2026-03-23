@@ -43,7 +43,10 @@ export class VelogClient {
       throw new Error(`Velog API error: ${res.status} ${res.statusText} - ${text}`);
     }
 
-    const json = (await res.json()) as GraphQLResponse<T>;
+    // Explicitly decode as UTF-8 to prevent Korean character corruption (U+FFFD ByteString error)
+    const buf = await res.arrayBuffer();
+    const decoded = new TextDecoder("utf-8").decode(buf);
+    const json = JSON.parse(decoded) as GraphQLResponse<T>;
 
     if (json.errors?.length) {
       throw new Error(`GraphQL error: ${json.errors.map((e) => e.message).join(", ")}`);
@@ -292,7 +295,9 @@ export class VelogClient {
       throw new Error(`Velog trending API error: ${res.status} ${res.statusText}`);
     }
 
-    return await res.json();
+    // Explicitly decode as UTF-8 to prevent Korean character corruption
+    const buf = await res.arrayBuffer();
+    return JSON.parse(new TextDecoder("utf-8").decode(buf));
   }
 
   async getUserProfile(username: string) {
