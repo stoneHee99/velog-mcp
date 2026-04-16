@@ -1,4 +1,5 @@
-const VELOG_GRAPHQL_ENDPOINT = "https://v2.velog.io/graphql";
+const VELOG_V2_ENDPOINT = "https://v2.velog.io/graphql";
+const VELOG_V3_ENDPOINT = "https://v3.velog.io/graphql";
 
 interface GraphQLResponse<T> {
   data?: T;
@@ -14,9 +15,10 @@ export class VelogClient {
     this.refreshToken = refreshToken ?? null;
   }
 
-  private async request<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+  private async request<T>(query: string, variables?: Record<string, unknown>, endpoint = VELOG_V2_ENDPOINT): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      "Origin": "https://velog.io",
     };
 
     if (this.accessToken) {
@@ -32,7 +34,7 @@ export class VelogClient {
     const operationMatch = query.match(/(?:query|mutation)\s+(\w+)/);
     const operationName = operationMatch?.[1] ?? undefined;
 
-    const res = await fetch(VELOG_GRAPHQL_ENDPOINT, {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers,
       body: JSON.stringify({ operationName, query, variables }),
@@ -150,32 +152,8 @@ export class VelogClient {
     series_id?: string;
   }) {
     const query = `
-      mutation WritePost(
-        $title: String
-        $body: String
-        $tags: [String]
-        $is_markdown: Boolean
-        $is_temp: Boolean
-        $is_private: Boolean
-        $url_slug: String
-        $thumbnail: String
-        $meta: JSON
-        $series_id: ID
-        $token: String
-      ) {
-        writePost(
-          title: $title
-          body: $body
-          tags: $tags
-          is_markdown: $is_markdown
-          is_temp: $is_temp
-          is_private: $is_private
-          url_slug: $url_slug
-          thumbnail: $thumbnail
-          meta: $meta
-          series_id: $series_id
-          token: $token
-        ) {
+      mutation WritePost($input: WritePostInput!) {
+        writePost(input: $input) {
           id
           url_slug
           user {
@@ -186,15 +164,18 @@ export class VelogClient {
       }
     `;
     const data = await this.request<{ writePost: unknown }>(query, {
-      is_markdown: true,
-      is_temp: false,
-      is_private: false,
-      meta: {},
-      thumbnail: null,
-      series_id: null,
-      token: null,
-      ...params,
-    });
+      input: {
+        tags: [],
+        is_markdown: true,
+        is_temp: false,
+        is_private: false,
+        meta: {},
+        thumbnail: null,
+        series_id: null,
+        token: null,
+        ...params,
+      },
+    }, VELOG_V3_ENDPOINT);
     return data.writePost;
   }
 
@@ -211,34 +192,8 @@ export class VelogClient {
     series_id?: string;
   }) {
     const query = `
-      mutation EditPost(
-        $id: ID!
-        $title: String
-        $body: String
-        $tags: [String]
-        $is_markdown: Boolean
-        $is_temp: Boolean
-        $is_private: Boolean
-        $url_slug: String
-        $thumbnail: String
-        $meta: JSON
-        $series_id: ID
-        $token: String
-      ) {
-        editPost(
-          id: $id
-          title: $title
-          body: $body
-          tags: $tags
-          is_markdown: $is_markdown
-          is_temp: $is_temp
-          is_private: $is_private
-          url_slug: $url_slug
-          thumbnail: $thumbnail
-          meta: $meta
-          series_id: $series_id
-          token: $token
-        ) {
+      mutation EditPost($input: EditPostInput!) {
+        editPost(input: $input) {
           id
           url_slug
           user {
@@ -249,12 +204,19 @@ export class VelogClient {
       }
     `;
     const data = await this.request<{ editPost: unknown }>(query, {
-      meta: {},
-      thumbnail: null,
-      series_id: null,
-      token: null,
-      ...params,
-    });
+      input: {
+        tags: [],
+        is_markdown: true,
+        is_temp: false,
+        is_private: false,
+        url_slug: "",
+        meta: {},
+        thumbnail: null,
+        series_id: null,
+        token: null,
+        ...params,
+      },
+    }, VELOG_V3_ENDPOINT);
     return data.editPost;
   }
 
