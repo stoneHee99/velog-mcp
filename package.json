@@ -1,6 +1,6 @@
 {
   "name": "velog-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP server for Velog blogging platform - Read, write, and manage Velog posts via Model Context Protocol",
   "type": "module",
   "bin": {
