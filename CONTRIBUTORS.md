@@ -7,7 +7,6 @@ velog-mcp에 기여해주신 모든 분들께 감사드립니다.
 | Contributor | Contribution |
 |---|---|
 | [@davindev](https://github.com/davindev) | [#4](https://github.com/stoneHee99/velog-mcp/issues/4) `editPost` silent failure 버그 제보 및 원인 분석 |
-| [@stoneHee99](https://github.com/stoneHee99) | [#5](https://github.com/stoneHee99/velog-mcp/pull/5) writePost/editPost v3 API input 형식 마이그레이션 |
 
 ## v0.2.0
 
