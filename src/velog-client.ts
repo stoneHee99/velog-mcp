@@ -165,15 +165,17 @@ export class VelogClient {
     `;
     const data = await this.request<{ writePost: unknown }>(query, {
       input: {
-        tags: [],
-        is_markdown: true,
-        is_temp: false,
-        is_private: false,
+        title: params.title,
+        body: params.body,
+        tags: params.tags ?? [],
+        is_markdown: params.is_markdown ?? true,
+        is_temp: params.is_temp ?? false,
+        is_private: params.is_private ?? false,
+        url_slug: params.url_slug ?? "",
         meta: {},
-        thumbnail: null,
-        series_id: null,
+        thumbnail: params.thumbnail ?? null,
+        series_id: params.series_id ?? null,
         token: null,
-        ...params,
       },
     }, VELOG_V3_ENDPOINT);
     return data.writePost;
@@ -205,16 +207,18 @@ export class VelogClient {
     `;
     const data = await this.request<{ editPost: unknown }>(query, {
       input: {
-        tags: [],
-        is_markdown: true,
-        is_temp: false,
-        is_private: false,
-        url_slug: "",
+        id: params.id,
+        title: params.title,
+        body: params.body,
+        tags: params.tags ?? [],
+        is_markdown: params.is_markdown ?? true,
+        is_temp: params.is_temp ?? false,
+        is_private: params.is_private ?? false,
+        url_slug: params.url_slug ?? "",
         meta: {},
-        thumbnail: null,
-        series_id: null,
+        thumbnail: params.thumbnail ?? null,
+        series_id: params.series_id ?? null,
         token: null,
-        ...params,
       },
     }, VELOG_V3_ENDPOINT);
     return data.editPost;

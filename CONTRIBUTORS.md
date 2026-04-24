@@ -2,6 +2,12 @@
 
 velog-mcp에 기여해주신 모든 분들께 감사드립니다.
 
+## v0.2.2
+
+| Contributor | Contribution |
+|---|---|
+| [@dev-crystalhwang](https://github.com/dev-crystalhwang) | [#8](https://github.com/stoneHee99/velog-mcp/issues/8) `write_post` tags 생략 시 silent failure 버그 제보 및 원인 분석 |
+
 ## v0.2.1
 
 | Contributor | Contribution |
